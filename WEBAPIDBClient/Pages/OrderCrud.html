@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        .genislik {
+            width: 300px
+        }
+    </style>
+
+    <link href="../Content/bootstrap.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-1.9.0.js"></script>
+    <script src="../Scripts/bootstrap.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                ID=><input type="text" class="form-control genislik" id="txtID"  />
+                ShipName=><input type="text" class="form-control genislik" id="txtShipName"  />
+                ShipAddress=><input type="text" class="form-control genislik" id="txtShipAddress"  />
+                Search=><input type="text" class="form-control genislik" id="txtSearch"  />
+                <hr />
+                <input type="button" id="btnAll" class="btn btn-danger" value="Order All" />
+                <hr />
+                <input type="button" id="btnID" class="btn btn-primary" value="Order Bring" />
+                <hr />
+                <input type="button" id="btnDelete" class="btn btn-warning" value="Order Delete" />
+                <hr />
+                <input type="button" id="btnAdd" class="btn btn-info" value="Order Add" />
+                <hr />
+                <input type="button" id="btnUpdate" class="btn btn-success" value="Order Update" />
+                <hr />
+
+
+
+            </div>
+            <div class="col-sm-6">
+                <table id="tab1" class="table table-bordered">
+                    <tr>
+
+                        <th>OrderID</th>
+                        <th>ShipName</th>
+                        <th>ShipAddress</th>
+                    </tr>
+
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+    <script>
+        function ControlHeader() {
+            $("#tab1").find("tr:gt(0)").remove();
+        }
+        function BringDataList(dataList) {
+            ControlHeader();
+            $.each(dataList, function (key, data) {
+                $("#tab1").append("<tr><td>" + data.ID + "</td><td>" + data.ShipName + "</td><td>" + data.ShipAddress + "</td></tr>")
+
+            })
+        }
+        function BringData(data) {
+            ControlHeader();
+            $("#tab1").append("<tr><td>" + data.ID + "</td><td>" + data.ShipName + "</td><td>" + data.ShipAddress + "</td></tr>")
+        }
+
+        function FetchData() {
+            $("#txtID").val(data.ID);
+            $("#txtShipName").val(data.ShipName);
+            $("#txtShipAddress").val(data.ShipAddress);
+        }
+
+        $(function () {
+            $("#btnAll").click(function () {
+                $.ajax({
+                    url: "https://localhost:44310/api/Order/ListOrders",
+                    type: "Get",
+                    success: function (data) {
+                        BringDataList(data);
+                    }
+
+                })
+
+            })
+        })
+
+        $("#btnID").click(function () {
+            $.ajax({
+
+                url: "https://localhost:44310/api/Order/BringOrder",
+                data: { id: $("#txtID").val() },
+                type: "Get",
+                success: function (data) {
+                    BringData(data);
+                }
+            })
+        })
+        $("#btnAdd").click(function () {
+            $.ajax({
+                url: "https://localhost:44310/api/Order/AddOrder",
+                type: "POST",
+                data: { CustomerID: $("#txtID").val(), ShipName: $("#txtShipName").val(), ShipAddress: $("#txtShipAddress").val() },
+                success: function (data) {
+                    BringDataList(data);
+                }
+
+            })
+
+        })
+
+        $("#btnUpdate").click(function () {
+            $.ajax({
+
+                url: "https://localhost:44310/api/Order/UpdateOrder",
+                type: "Put",
+                data: { OrderID: $("#txtID").val(), ShipName: $("#txtShipName").val(), ShipAddress: $("#txtShipAddress").val() },
+                success: function (data) {
+                    BringDataList(data);
+                }
+
+            })
+        })
+
+        $("#btnDelete").click(function () {
+            $.ajax({
+                url: "https://localhost:44310/api/Order/DeleteOrder/" + $("#txtID").val(),
+                type: "Delete",
+                success: function (data) {
+                    BringDataList(data);
+                }
+            })
+        })
+
+
+
+    </script>
+
+
+
+</body>
+</html>

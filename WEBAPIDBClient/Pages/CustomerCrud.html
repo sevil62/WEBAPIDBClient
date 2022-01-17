@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        .genislik {
+            width: 300px
+        }
+    </style>
+
+    <link href="../Content/bootstrap.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-1.9.0.js"></script>
+    <script src="../Scripts/bootstrap.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                ID=><input type="text" class="form-control genislik" id="txtID" placeholder="Customer ID"  />
+                CompanyName=><input type="text"class="form-control genislik" id="txtCompanyName"placeholder="Company Name"  />
+                ContactName=><input type="text" class="form-control genislik" id="txtContactName" placeholder="Contact Name" />
+                Search=><input type="text" class="form-control genislik"id="txtSearch" placeholder="Search" />
+                <hr />
+                <input type="button" id="btnAll" class="btn btn-danger" value="Customer All"/>
+                <hr />
+                <input type="button" id="btnID" class="btn btn-primary" value="Customer Bring"/>
+                <hr />
+                <input type="button" id="btnDelete" class="btn btn-warning" value="Customer Delete"/>
+                <hr />
+                <input type="button" id="btnAdd" class="btn btn-info" value="Customer Add"/>
+                <hr />
+                <input type="button" id="btnUpdate" class="btn btn-success" value="Customer Update"/>
+                <hr />
+               
+
+
+            </div>
+            <div class="col-sm-6">
+                <table id="tab1" class="table table-bordered">
+                    <tr>
+
+                        <th>CustomerID</th>
+                        <th>CompanyName</th>
+                        <th>ContactName</th>
+                    </tr>
+
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+    <script>
+        function ControlHeader() {
+            $("#tab1").find("tr:gt(0)").remove();
+        }
+        function BringDataList(dataList) {
+            ControlHeader();
+            $.each(dataList, function (key, data) {
+                $("#tab1").append("<tr><td>"+data.ID+"</td><td>"+data.CompanyName+"</td><td>"+data.ContactName+"</td></tr>")
+
+            })
+        }
+        function BringData(data)
+        {
+            ControlHeader();
+            $("#tab1").append("<tr><td>"+data.ID+"</td><td>"+data.CompanyName+"</td><td>"+data.ContactName+"</td></tr>")
+        }
+
+        function FetchData() {
+            $("#txtID").val(data.ID);
+            $("#txtCompanyName").val(data.CompanyName);
+            $("#txtContactName").val(data.ContactName);
+        }
+
+        $(function () {
+            $("#btnAll").click(function () {
+                $.ajax({
+                    url: "https://localhost:44310/api/Customer/ListCustomers",
+                    type: "Get",
+                    success: function (data) {
+                        BringDataList(data);
+                    }
+
+                })
+
+            })
+        })
+
+        $("#btnID").click(function () {
+            $.ajax({
+
+                url: "https://localhost:44310/api/Customer/BringCustomer",
+                data: { id: $("#txtID").val() },
+                type: "Get",
+                success: function (data) {
+                    BringData(data);
+                }
+            })
+        })
+        $("#btnAdd").click(function () {
+            $.ajax({
+                url: "https://localhost:44310/api/Customer/AddCustomer",
+                type: "POST",
+                data: { CustomerID:$("#txtID").val(),CompanyName: $("#txtCompanyName").val(), ContactName: $("#txtContactName").val() },
+                success: function (data) {
+                    BringDataList(data);
+                }
+                
+            })
+
+        })
+
+        $("#btnUpdate").click(function () {
+            $.ajax({
+
+                url: "https://localhost:44310/api/Customer/UpdatedCustomer",
+                type: "Put",
+                data: { CustomerID: $("#txtID").val(), CompanyName: $("#txtCompanyName").val(), ContactName: $("#txtContactName").val() },
+                success: function (data) {
+                    BringDataList(data);
+                }
+
+            })
+        })
+
+        $("#btnDelete").click(function () {
+            $.ajax({
+                url: "https://localhost:44310/api/Customer/DeleteCustomer/" + $("#txtID").val(),
+                type: "Delete",
+                success: function (data) {
+                    BringDataList(data);
+                }
+            })
+        })
+
+
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        .genislik {
+            width: 300px
+        }
+    </style>
+
+    <link href="../Content/bootstrap.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-1.9.0.js"></script>
+    <script src="../Scripts/bootstrap.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                ID=><input type="text" class="form-control genislik" id="txtID"  />
+                ProductName=><input type="text" class="form-control genislik" id="txtProductName"  />
+                UnitPrice=><input type="text" class="form-control genislik" id="txtUnitPrice"  />
+                Search=><input type="text" class="form-control genislik" id="txtSearch"  />
+                <hr />
+                <input type="button" id="btnAll" class="btn btn-danger" value="Product All" />
+                <hr />
+                <input type="button" id="btnID" class="btn btn-primary" value="Product Bring" />
+                <hr />
+                <input type="button" id="btnDelete" class="btn btn-warning" value="Product Delete" />
+                <hr />
+                <input type="button" id="btnAdd" class="btn btn-info" value="Product Add" />
+                <hr />
+                <input type="button" id="btnUpdate" class="btn btn-success" value="Product Update" />
+                <hr />
+
+
+
+            </div>
+            <div class="col-sm-6">
+                <table id="tab1" class="table table-bordered">
+                    <tr>
+
+                        <th>ProductID</th>
+                        <th>ProductName</th>
+                        <th>UnitPrice</th>
+                    </tr>
+
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+    <script>
+        function ControlHeader() {
+            $("#tab1").find("tr:gt(0)").remove();
+        }
+        function BringDataList(dataList) {
+            ControlHeader();
+            $.each(dataList, function (key, data) {
+                $("#tab1").append("<tr><td>" + data.ID + "</td><td>" + data.ProductName + "</td><td>" + data.UnitPrice + "</td></tr>")
+
+            })
+        }
+        function BringData(data) {
+            ControlHeader();
+            $("#tab1").append("<tr><td>" + data.ID + "</td><td>" + data.ProductName + "</td><td>" + data.UnitPrice + "</td></tr>")
+        }
+
+        function FetchData() {
+            $("#txtID").val(data.ID);
+            $("#txtProductName").val(data.ProductName);
+            $("#txtUnitPrice").val(data.UnitPrice);
+        }
+
+        $(function () {
+            $("#btnAll").click(function () {
+                $.ajax({
+                    url: "https://localhost:44310/api/Product/ListProducts",
+                    type: "Get",
+                    success: function (data) {
+                        BringDataList(data);
+                    }
+
+                })
+
+            })
+        })
+
+        $("#btnID").click(function () {
+            $.ajax({
+
+                url: "https://localhost:44310/api/Product/BringProduct",
+                data: { ID: $("#txtID").val() },
+                type: "Get",
+                success: function (data) {
+                    BringData(data);
+                }
+            })
+        })
+        $("#btnAdd").click(function () {
+            $.ajax({
+                url: "https://localhost:44310/api/Product/AddProduct",
+                type: "POST",
+                data: {ProductName: $("#txtProductName").val(), UnitPrice: $("#txtUnitPrice").val() },
+                success: function (data) {
+                    BringDataList(data);
+                }
+
+            })
+
+        })
+
+        $("#btnUpdate").click(function () {
+            $.ajax({
+
+                url: "https://localhost:44310/api/Product/UpdateProduct",
+                type: "Put",
+                data: { ProductID: $("#txtID").val(), ProductName: $("#txtProductName").val(), UnitPrice: $("#txtUnitPrice").val() },
+                success: function (data) {
+                    BringDataList(data);
+                }
+
+            })
+        })
+
+        $("#btnDelete").click(function () {
+            $.ajax({
+                url: "https://localhost:44310/api/Product/DeleteProduct/" + $("#txtID").val(),
+                type: "Delete",
+                success: function (data) {
+                    BringDataList(data);
+                }
+            })
+        })
+
+
+
+    </script>
+
+
+</body>
+</html>

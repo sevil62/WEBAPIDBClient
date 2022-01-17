@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        .genislik {
+            width: 300px
+        }
+    </style>
+
+    <link href="../Content/bootstrap.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-1.9.0.js"></script>
+    <script src="../Scripts/bootstrap.js"></script>
+
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                ID=><input type="text" class="form-control genislik" id="txtID"  />
+                CompanyName=><input type="text" class="form-control genislik" id="txtCompanyName"  />
+                Phone=><input type="text" class="form-control genislik" id="txtPhone"  />
+                Search=><input type="text" class="form-control genislik" id="txtSearch"  />
+                <hr />
+                <input type="button" id="btnAll" class="btn btn-danger" value="Shipper All" />
+                <hr />
+                <input type="button" id="btnID" class="btn btn-primary" value="Shipper Bring" />
+                <hr />
+                <input type="button" id="btnDelete" class="btn btn-warning" value="Shipper Delete" />
+                <hr />
+                <input type="button" id="btnAdd" class="btn btn-info" value="Shipper Add" />
+                <hr />
+                <input type="button" id="btnUpdate" class="btn btn-success" value="Shipper Update" />
+                <hr />
+
+
+
+            </div>
+            <div class="col-sm-6">
+                <table id="tab1" class="table table-bordered">
+                    <tr>
+
+                        <th>ShipperID</th>
+                        <th>CompanyName</th>
+                        <th>Phone</th>
+                    </tr>
+
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+    <script>
+        function ControlHeader() {
+            $("#tab1").find("tr:gt(0)").remove();
+        }
+        function BringDataList(dataList) {
+            ControlHeader();
+            $.each(dataList, function (key, data) {
+                $("#tab1").append("<tr><td>" + data.ShipperID + "</td><td>" + data.CompanyName + "</td><td>" + data.Phone + "</td></tr>")
+
+            })
+        }
+        function BringData(data) {
+            ControlHeader();
+            $("#tab1").append("<tr><td>" + data.ShipperID + "</td><td>" + data.CompanyName + "</td><td>" + data.Phone + "</td></tr>")
+        }
+
+        function FetchData() {
+            $("#txtID").val(data.ShipperID);
+            $("#txtCompanyName").val(data.CompanyName);
+            $("#txtPhone").val(data.Phone);
+        }
+
+        $(function () {
+            $("#btnAll").click(function () {
+                $.ajax({
+                    url: "https://localhost:44310/api/Shipper/ListShippers",
+                    type: "Get",
+                    success: function (data) {
+                        BringDataList(data);
+                    }
+
+                })
+
+            })
+        })
+
+        $("#btnID").click(function () {
+            $.ajax({
+
+                url: "https://localhost:44310/api/Shipper/BringShipper",
+                data: { id: $("#txtID").val() },
+                type: "Get",
+                success: function (data) {
+                    BringData(data);
+                }
+            })
+        })
+        $("#btnAdd").click(function () {
+            $.ajax({
+                url: "https://localhost:44310/api/Shipper/AddShipper",
+                type: "POST",
+                data: { ShipperID: $("#txtID").val(), CompanyName: $("#txtCompanyName").val(), Phone: $("#txtPhone").val() },
+                success: function (data) {
+                    BringDataList(data);
+                }
+
+            })
+
+        })
+
+        $("#btnUpdate").click(function () {
+            $.ajax({
+
+                url: "https://localhost:44310/api/Shipper/UpdateShipper",
+                type: "Put",
+                data: { ShipperID: $("#txtID").val(), CompanyName: $("#txtCompanyName").val(), Phone: $("#txtPhone").val() },
+                success: function (data) {
+                    BringDataList(data);
+                }
+
+            })
+        })
+
+
+
+        $("#btnDelete").click(function () {
+            $.ajax({
+                url: "https://localhost:44310/api/Shipper/DeleteShipper/" + $("#txtID").val(),
+                type: "Delete",
+                success: function (data) {
+                    BringDataList(data);
+                }
+            })
+        })
+
+
+
+    </script>
+
+</body>
+</html>
